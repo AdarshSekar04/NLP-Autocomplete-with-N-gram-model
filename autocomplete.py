@@ -20,6 +20,7 @@ import pandas as pd
 import nltk
 nltk.data.path.append('.')
 
+
 '''
 Here, we open our twitter data, and check the data we read in.
 '''
@@ -86,6 +87,10 @@ def get_tokenized_data(data):
     tokenized_sentences = tokenize_sentences(sentences)
     return tokenized_sentences
 
+def get_tokenized_data2():
+    sentences = split_to_sentences(data)
+    tokenized_sentences = tokenize_sentences(sentences)
+    return tokenized_sentences
 #Small test 
 # x = "I have a pen.\nI have an apple. \nAh\nApple pen.\n"
 # tokenized = get_tokenized_data(x)
@@ -103,14 +108,14 @@ train_data = tokenized_data[0:train_size]
 test_data = tokenized_data[train_size:]
 
 #Print out splits
-print("{} data are split into {} train and {} test set".format(
-    len(tokenized_data), len(train_data), len(test_data)))
+# print("{} data are split into {} train and {} test set".format(
+#     len(tokenized_data), len(train_data), len(test_data)))
 
-print("First training sample:")
-print(train_data[0])
+# print("First training sample:")
+# print(train_data[0])
       
-print("First test sample")
-print(test_data[0])
+# print("First test sample")
+# print(test_data[0])
 
 
 '''
@@ -138,11 +143,11 @@ def count_words(tokenized_sentences):
     return word_counts
 
 #Small test
-tokenized_sentences = [['sky', 'is', 'blue', '.'],
-                       ['leaves', 'are', 'green', '.'],
-                       ['roses', 'are', 'red', '.']]
-counts = count_words(tokenized_sentences)
-print(counts)
+# tokenized_sentences = [['sky', 'is', 'blue', '.'],
+#                        ['leaves', 'are', 'green', '.'],
+#                        ['roses', 'are', 'red', '.']]
+# counts = count_words(tokenized_sentences)
+# print(counts)
 
 '''
 Now, we'll get rid of any OOV's. OOV's are words the occur fewer than N times.
@@ -206,6 +211,11 @@ def preprocess_data(train_data, test_data, count_threshold):
     train_data_replaced = replace_oov_words_by_unk(train_data, vocabulary)
     test_data_replaced = replace_oov_words_by_unk(test_data, vocabulary)
     return train_data_replaced, test_data_replaced, vocabulary
+    
+
+def preprocess_sentence(sentence, vocabulary):
+    replaced_sentence = replace_oov_words_by_unk(sentence, vocabulary)
+    return replaced_sentence
 
 #Small test
 # tmp_train = [['sky', 'is', 'blue', '.'],
@@ -551,7 +561,7 @@ k, our smoothing factor,
 start_with, an optional prefix
 '''
 
-def get_suggestions(previous_tokens, n_grams_counts_list, vocabulary, k = 1.0, start_with = None):
+def get_suggestions(previous_tokens, n_gram_counts_list, vocabulary, k = 1.0, start_with = None):
     model_counts = len(n_gram_counts_list)
     suggestions = []
     for i in range(0, model_counts-1):
@@ -584,39 +594,39 @@ def get_suggestions(previous_tokens, n_grams_counts_list, vocabulary, k = 1.0, s
 Full test: Can edit the code below to mess around
 '''
 #get ngrams of varying lengths
-n_gram_counts_list = []
-for n in range(1, 6):
-    print("Computing n-gram counts with n =", n, "...")
-    n_model_counts = count_n_grams(train_data_processed, n)
-    n_gram_counts_list.append(n_model_counts)
+# n_gram_counts_list = []
+# for n in range(1, 6):
+#     print("Computing n-gram counts with n =", n, "...")
+#     n_model_counts = count_n_grams(train_data_processed, n)
+#     n_gram_counts_list.append(n_model_counts)
 
-#Test with some previous tokens
-previous_tokens = ["i", "am", "to"]
-tmp_suggest4 = get_suggestions(previous_tokens, n_gram_counts_list, vocabulary, k=1.0)
+# #Test with some previous tokens
+# previous_tokens = ["i", "am", "to"]
+# tmp_suggest4 = get_suggestions(previous_tokens, n_gram_counts_list, vocabulary, k=1.0)
 
-print(f"The previous words are {previous_tokens}, the suggestions are:")
-print(tmp_suggest4)
+# print(f"The previous words are {previous_tokens}, the suggestions are:")
+# print(tmp_suggest4)
 
-previous_tokens = ["i", "want", "to", "go"]
-tmp_suggest5 = get_suggestions(previous_tokens, n_gram_counts_list, vocabulary, k=1.0)
+# previous_tokens = ["i", "want", "to", "go"]
+# tmp_suggest5 = get_suggestions(previous_tokens, n_gram_counts_list, vocabulary, k=1.0)
 
-print(f"The previous words are {previous_tokens}, the suggestions are:")
-print(tmp_suggest5)
+# print(f"The previous words are {previous_tokens}, the suggestions are:")
+# print(tmp_suggest5)
 
-previous_tokens = ["hey", "how", "are"]
-tmp_suggest6 = get_suggestions(previous_tokens, n_gram_counts_list, vocabulary, k=1.0)
+# previous_tokens = ["hey", "how", "are"]
+# tmp_suggest6 = get_suggestions(previous_tokens, n_gram_counts_list, vocabulary, k=1.0)
 
-print(f"The previous words are {previous_tokens}, the suggestions are:")
-print(tmp_suggest6)
+# print(f"The previous words are {previous_tokens}, the suggestions are:")
+# print(tmp_suggest6)
 
-previous_tokens = ["hey", "how", "are", "you"]
-tmp_suggest7 = get_suggestions(previous_tokens, n_gram_counts_list, vocabulary, k=1.0)
+# previous_tokens = ["hey", "how", "are", "you"]
+# tmp_suggest7 = get_suggestions(previous_tokens, n_gram_counts_list, vocabulary, k=1.0)
 
-print(f"The previous words are {previous_tokens}, the suggestions are:")
-print(tmp_suggest7)
+# print(f"The previous words are {previous_tokens}, the suggestions are:")
+# print(tmp_suggest7)
 
-previous_tokens = ["hey", "how", "are", "you"]
-tmp_suggest8 = get_suggestions(previous_tokens, n_gram_counts_list, vocabulary, k=1.0, start_with="d")
+# previous_tokens = ["hey", "how", "are", "you"]
+# tmp_suggest8 = get_suggestions(previous_tokens, n_gram_counts_list, vocabulary, k=1.0, start_with="d")
 
-print(f"The previous words are {previous_tokens}, the suggestions are:")
-print(tmp_suggest8)
+# print(f"The previous words are {previous_tokens}, the suggestions are:")
+# print(tmp_suggest8)
